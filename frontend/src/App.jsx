@@ -28,17 +28,19 @@ export default App;*/
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import Home from "./pages/Home"; // Home-ஐயும் Import செய்ய வேண்டும்
+import Signup from './pages/Signup';
+import Home from "./pages/Home"; 
 
 function App() {
   return (
     <Router>
       <Routes>
-	    {/* ஆரம்பத்தில் லாகின் பக்கம் தெரிய path="/" என வைக்கலாம் */}
-        <Route path="/" element={<Login />} />
-        
-        {/* ஹோம் பக்கத்திற்கான பாதை */}
+	    
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
         <Route path="/home" element={<Home />} />
+		<Route path="/" element={<Login />} />
+		
       </Routes>
     </Router>
   );
