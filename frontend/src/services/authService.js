@@ -1,23 +1,33 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import axios from 'axios';
 
-export const registerUser = async (formData) => {
-    const res = await fetch(`${BASE_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Registration failed");
-    return data;
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const AUTH_URL = `${API_BASE_URL}/users`;
+
+const getErrorMessage = (error, fallbackMessage) => error.response?.data?.message || error.message || fallbackMessage;
+
+export const signupUser = async (formData) => {
+    try {
+        const response = await axios.post(`${AUTH_URL}/signup`, formData);
+        return response.data;
+    } catch (error) {
+        throw new Error(getErrorMessage(error, 'Signup failed'), { cause: error });
+    }
 };
 
 export const loginUser = async (formData) => {
-    const res = await fetch(`${BASE_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Login failed");
-    return data;
+    try {
+        const response = await axios.post(`${AUTH_URL}/login`, formData);
+        return response.data;
+    } catch (error) {
+        throw new Error(getErrorMessage(error, 'Login failed'), { cause: error });
+    }
+};
+
+export const getCurrentUser = async (token) => {
+    try {
+        const response = await axios.get(`${AUTH_URL}/me`, { headers: { Authorization: `Bearer ${token}` } });
+        return response.data;
+    } catch (error) {
+        throw new Error(getErrorMessage(error, 'Unable to load current user'), { cause: error });
+    }
 };

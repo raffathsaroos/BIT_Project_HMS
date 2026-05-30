@@ -1,13 +1,21 @@
 import User from '../models/user.js';
 
 class UserDao {
-        async getUserByEmail(email) {
-        return await User.findOne({ email });
+    async createUser(userData) {
+        const user = new User(userData);
+        return user.save();
     }
-	
-async createUser(userData) {
-        const newUser = new User(userData);
-        return await newUser.save();
+
+    async getUserByEmail(email, includePassword = false) {
+        const query = User.findOne({ email: email.toLowerCase().trim() });
+        if (includePassword) {
+            query.select('+password');
+        }
+        return query.exec();
+    }
+
+    async getUserById(userId) {
+        return User.findById(userId).exec();
     }
 }
 
