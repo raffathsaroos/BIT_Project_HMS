@@ -18,7 +18,7 @@ const DashboardLayout = ({ kicker, title, description, cards }) => {
                     <h1 style={styles.title}>{title || `${user?.name || 'User'}`}</h1>
                     <p style={styles.subtitle}>{description}</p>
                 </div>
-                <button type="button" style={styles.logoutButton} onClick={handleLogout}>Logout</button>
+                <button type="button" style={styles.logoutButton} onClick={handleLogout}>Signout</button>
             </section>
 
             <section style={styles.grid}>
