@@ -1,0 +1,7 @@
+import { API_BASE_URL, apiPost } from './apiClient.js';
+
+const USERS_URL = `${API_BASE_URL}/users`;
+
+export const createStaffUser = async (userData, token) => {
+    return apiPost(`${USERS_URL}/admin/create-user`, userData, token, 'Unable to create staff user');
+};

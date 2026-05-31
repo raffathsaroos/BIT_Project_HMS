@@ -40,7 +40,7 @@ function Login() {
                     <input id="password" style={styles.input} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" required />
                     <button style={styles.submitButton} type="submit" disabled={submitting}>{submitting ? 'Signing in...' : 'Login'}</button>
                 </form>
-                <p style={styles.footerText}>Need an account? <Link style={styles.link} to="/signup">Create one</Link></p>
+                <p style={styles.footerText}>Create user account as patient here || <Link style={styles.link} to="/signup">Create one</Link></p>
             </section>
         </main>
     );
