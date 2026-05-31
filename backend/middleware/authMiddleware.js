@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken';
-import userDao from '../dao/userDao.js';
+import authService from '../services/authService.js';
 
 const getTokenFromHeader = (authorizationHeader) => {
     if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
@@ -20,22 +19,7 @@ export const protect = async (req, res, next) => {
             });
         }
 
-        if (!process.env.JWT_SECRET) {
-            return res.status(500).json({
-                success: false,
-                message: 'JWT_SECRET is not configured',
-            });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userDao.getUserById(decoded.id);
-
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: 'User attached to this token no longer exists',
-            });
-        }
+        const user = await authService.verifyTokenAndGetUser(token);
 
         if (!user.isActive) {
             return res.status(403).json({
@@ -52,9 +36,11 @@ export const protect = async (req, res, next) => {
 
         return next();
     } catch (error) {
-        return res.status(401).json({
+        const statusCode = error.message === 'JWT_SECRET is not configured' ? 500 : 401;
+
+        return res.status(statusCode).json({
             success: false,
-            message: 'Invalid or expired authentication token',
+            message: statusCode === 500 ? error.message : 'Invalid or expired authentication token',
         });
     }
 };

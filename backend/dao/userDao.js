@@ -17,6 +17,10 @@ class UserDao {
     async getUserById(userId) {
         return User.findById(userId).exec();
     }
+
+    async countUsersByRole(role) {
+        return User.countDocuments({ role }).exec();
+    }
 }
 
 export default new UserDao();

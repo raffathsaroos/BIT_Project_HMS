@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import userRoutes from './routes/route.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import userService from './services/userService.js';
 
 dotenv.config();
 
@@ -12,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.use('/api/users', authRoutes);
 app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
@@ -28,6 +31,8 @@ const startServer = async () => {
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Database connected');
+
+    await userService.ensureDefaultAdmin();
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);

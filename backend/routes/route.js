@@ -1,11 +1,3 @@
-import express from 'express';
-import { getCurrentUser, loginUser, signupUser } from '../controllers/userController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import authRoutes from './authRoutes.js';
 
-const router = express.Router();
-
-router.post('/signup', signupUser);
-router.post('/login', loginUser);
-router.get('/me', protect, getCurrentUser);
-
-export default router;
+export default authRoutes;
