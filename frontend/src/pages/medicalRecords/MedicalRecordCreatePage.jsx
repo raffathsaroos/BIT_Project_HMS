@@ -24,7 +24,7 @@ const MedicalRecordCreatePage = () => {
         setLoadingPatients(true);
         try {
             const requests = [getPatients({ token, limit: 100 })];
-            if (user?.role !== 'doctor') requests.push(getUsers({ token, role: 'doctor' }));
+            if (user?.role === 'admin') requests.push(getUsers({ token, filters: { role: 'doctor' } }));
 
             const [patientResponse, doctorResponse] = await Promise.all(requests);
             setPatients(patientResponse.patients || []);
@@ -64,7 +64,7 @@ const MedicalRecordCreatePage = () => {
             },
         };
 
-        if (user?.role !== 'doctor') payload.doctor = formData.doctor;
+        if (user?.role === 'admin') payload.doctor = formData.doctor;
 
         try {
             await createMedicalRecord(payload, token);
@@ -103,8 +103,8 @@ const MedicalRecordCreatePage = () => {
                             {patients.map((patient) => <option key={getPatientId(patient)} value={getPatientId(patient)}>{getPatientLabel(patient)}</option>)}
                         </select>
                     </label>
-                    {user?.role !== 'doctor' && (
-                        <label style={styles.label}>Doctor
+                    {user?.role === 'admin' && (
+                        <label style={styles.label}>Select Doctor
                             <select style={styles.input} name="doctor" value={formData.doctor} onChange={handleChange} required>
                                 <option value="">Select doctor</option>
                                 {doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{getUserLabel(doctor)}</option>)}

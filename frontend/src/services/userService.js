@@ -2,8 +2,8 @@ import { API_BASE_URL, apiGet, apiPost } from './apiClient.js';
 
 const USERS_URL = `${API_BASE_URL}/users`;
 
-export const getUsers = async ({ token, role = '' }) => {
-    return apiGet(USERS_URL, token, { role }, 'Unable to load users');
+export const getUsers = async ({ token, role = '', filters = {} }) => {
+    return apiGet(USERS_URL, token, { role, ...filters }, 'Unable to load users');
 };
 
 export const createStaffUser = async (userData, token) => {

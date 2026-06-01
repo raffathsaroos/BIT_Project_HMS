@@ -9,7 +9,7 @@ const MedicalRecordsPage = () => (
         description="Review patient consultation notes, diagnoses, vital signs, and follow-up status."
         loadData={getMedicalRecords}
         itemsKey="medicalRecords"
-        createAction={{ to: '/medical-records/new', label: 'Add Medical Record', allowedRoles: ['doctor'] }}
+        createAction={{ to: '/medical-records/new', label: 'Add Medical Record', allowedRoles: ['admin', 'doctor'] }}
         emptyMessage="No medical records are currently available."
         columns={[
             { label: 'Patient', render: (item) => getPersonName(item.patient) },

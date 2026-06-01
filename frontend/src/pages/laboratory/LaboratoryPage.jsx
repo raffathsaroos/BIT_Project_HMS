@@ -9,7 +9,7 @@ const LaboratoryPage = () => (
         description="View lab test requests, assigned technicians, priorities, and result completion status."
         loadData={getLabRequests}
         itemsKey="labRequests"
-        createAction={{ to: '/laboratory/new', label: 'Add Lab Request', allowedRoles: ['doctor'] }}
+        createAction={{ to: '/laboratory/new', label: 'Add Lab Request', allowedRoles: ['admin', 'doctor'] }}
         emptyMessage="No laboratory requests are currently available."
         columns={[
             { label: 'Patient', render: (item) => getPersonName(item.patient) },

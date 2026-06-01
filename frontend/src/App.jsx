@@ -51,7 +51,7 @@ const roleRoute = (allowedRoles, children) => (
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
@@ -77,15 +77,15 @@ function App() {
                 <Route path="/queue" element={roleRoute(['admin', 'doctor', 'nurse'], <QueuePage />)} />
                 <Route path="/queue/new" element={roleRoute(['admin', 'nurse'], <QueueCreatePage />)} />
                 <Route path="/medical-records" element={roleRoute(['admin', 'doctor', 'nurse'], <MedicalRecordsPage />)} />
-                <Route path="/medical-records/new" element={roleRoute(['doctor'], <MedicalRecordCreatePage />)} />
+                <Route path="/medical-records/new" element={roleRoute(['admin', 'doctor'], <MedicalRecordCreatePage />)} />
                 <Route path="/prescriptions" element={roleRoute(['admin', 'doctor', 'pharmacist'], <PrescriptionsPage />)} />
-                <Route path="/prescriptions/new" element={roleRoute(['doctor'], <PrescriptionCreatePage />)} />
+                <Route path="/prescriptions/new" element={roleRoute(['admin', 'doctor'], <PrescriptionCreatePage />)} />
                 <Route path="/pharmacy" element={roleRoute(['admin', 'doctor', 'pharmacist'], <PharmacyPage />)} />
                 <Route path="/pharmacy/new" element={roleRoute(['admin', 'pharmacist'], <MedicineCreatePage />)} />
                 <Route path="/laboratory" element={roleRoute(['admin', 'doctor', 'nurse', 'lab_technician'], <LaboratoryPage />)} />
-                <Route path="/laboratory/new" element={roleRoute(['doctor'], <LabRequestCreatePage />)} />
+                <Route path="/laboratory/new" element={roleRoute(['admin', 'doctor'], <LabRequestCreatePage />)} />
                 <Route path="/radiology" element={roleRoute(['admin', 'doctor', 'nurse', 'radiologist'], <RadiologyPage />)} />
-                <Route path="/radiology/new" element={roleRoute(['doctor'], <RadiologyRequestCreatePage />)} />
+                <Route path="/radiology/new" element={roleRoute(['admin', 'doctor'], <RadiologyRequestCreatePage />)} />
                 <Route path="/billing" element={roleRoute(['admin'], <BillingPage />)} />
                 <Route path="/billing/new" element={roleRoute(['admin'], <BillCreatePage />)} />
                 <Route path="/inventory" element={roleRoute(['admin'], <InventoryPage />)} />

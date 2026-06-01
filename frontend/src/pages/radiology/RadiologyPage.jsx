@@ -9,7 +9,7 @@ const RadiologyPage = () => (
         description="Review scan requests, scheduled imaging, assigned radiologists, reports, and completion status."
         loadData={getRadiologyRequests}
         itemsKey="radiologyRequests"
-        createAction={{ to: '/radiology/new', label: 'Add Radiology Request', allowedRoles: ['doctor'] }}
+        createAction={{ to: '/radiology/new', label: 'Add Radiology Request', allowedRoles: ['admin', 'doctor'] }}
         emptyMessage="No radiology requests are currently available."
         columns={[
             { label: 'Patient', render: (item) => getPersonName(item.patient) },
