@@ -9,6 +9,7 @@ const AppointmentsPage = () => (
         description="View scheduled visits, assigned clinicians, departments, and appointment status."
         loadData={getAppointments}
         itemsKey="appointments"
+        createAction={{ to: '/appointments/new', label: 'Add Appointment', allowedRoles: ['admin'] }}
         emptyMessage="No appointments are currently available."
         columns={[
             { label: 'Date and Time', render: (item) => formatDateTime(item.appointmentDate) },

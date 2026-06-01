@@ -7,8 +7,10 @@ const getNestedValue = (item, path) => {
     return path.split('.').reduce((value, key) => value?.[key], item) ?? '';
 };
 
-const ModuleListPage = ({ title, kicker, description, loadData, itemsKey, columns, emptyMessage, filters = {} }) => {
-    const { token } = useAuth();
+const EMPTY_FILTERS = {};
+
+const ModuleListPage = ({ title, kicker, description, loadData, itemsKey, columns, emptyMessage, filters = EMPTY_FILTERS, createAction = null }) => {
+    const { token, user } = useAuth();
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -35,6 +37,8 @@ const ModuleListPage = ({ title, kicker, description, loadData, itemsKey, column
         return () => clearTimeout(timeoutId);
     }, [loadItems]);
 
+    const canCreate = createAction?.allowedRoles?.includes(user?.role);
+
     const renderCell = (item, column) => {
         if (column.render) {
             return column.render(item);
@@ -54,6 +58,7 @@ const ModuleListPage = ({ title, kicker, description, loadData, itemsKey, column
                 <div style={styles.actions}>
                     <button type="button" onClick={loadItems} style={styles.secondaryButton}>Refresh</button>
                     <Link style={styles.secondaryLink} to="/dashboard">Dashboard</Link>
+                    {canCreate && <Link style={styles.primaryLink} to={createAction.to}>{createAction.label}</Link>}
                 </div>
             </section>
 
@@ -131,6 +136,15 @@ const styles = {
         border: '1px solid #cbd5e1',
         color: '#0f172a',
         background: '#ffffff',
+        padding: '10px 14px',
+        borderRadius: '10px',
+        fontWeight: 700,
+    },
+    primaryLink: {
+        textDecoration: 'none',
+        border: '1px solid #2563eb',
+        color: '#ffffff',
+        background: '#2563eb',
         padding: '10px 14px',
         borderRadius: '10px',
         fontWeight: 700,

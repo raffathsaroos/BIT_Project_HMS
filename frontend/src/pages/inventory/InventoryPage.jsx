@@ -8,6 +8,7 @@ const InventoryPage = () => (
         description="Monitor hospital supplies, equipment, stock levels, locations, and reorder thresholds."
         loadData={getInventoryItems}
         itemsKey="inventoryItems"
+        createAction={{ to: '/inventory/new', label: 'Add Inventory Item', allowedRoles: ['admin'] }}
         emptyMessage="No inventory items are currently recorded."
         columns={[
             { label: 'Item', key: 'name' },

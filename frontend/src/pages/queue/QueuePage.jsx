@@ -9,6 +9,7 @@ const QueuePage = () => (
         description="Monitor waiting patients, queue priority, department flow, and current service status."
         loadData={getQueueEntries}
         itemsKey="queueEntries"
+        createAction={{ to: '/queue/new', label: 'Add Queue Entry', allowedRoles: ['admin', 'nurse'] }}
         emptyMessage="No queue entries are currently waiting."
         columns={[
             { label: 'Queue Number', key: 'queueNumber' },

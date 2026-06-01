@@ -7,7 +7,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Unauthorized from './pages/Unauthorized';
 import AppointmentsPage from './pages/appointments/AppointmentsPage';
+import AppointmentCreatePage from './pages/appointments/AppointmentCreatePage';
 import BillingPage from './pages/billing/BillingPage';
+import BillCreatePage from './pages/billing/BillCreatePage';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
 import DoctorDashboard from './pages/dashboards/DoctorDashboard';
 import LabDashboard from './pages/dashboards/LabDashboard';
@@ -17,17 +19,25 @@ import PharmacistDashboard from './pages/dashboards/PharmacistDashboard';
 import RadiologyDashboard from './pages/dashboards/RadiologyDashboard';
 import FeedbackPage from './pages/feedback/FeedbackPage';
 import InventoryPage from './pages/inventory/InventoryPage';
+import InventoryCreatePage from './pages/inventory/InventoryCreatePage';
 import LaboratoryPage from './pages/laboratory/LaboratoryPage';
+import LabRequestCreatePage from './pages/laboratory/LabRequestCreatePage';
 import MedicalRecordsPage from './pages/medicalRecords/MedicalRecordsPage';
+import MedicalRecordCreatePage from './pages/medicalRecords/MedicalRecordCreatePage';
 import NotificationsPage from './pages/notifications/NotificationsPage';
+import NotificationCreatePage from './pages/notifications/NotificationCreatePage';
 import PatientCreatePage from './pages/patients/PatientCreatePage';
 import PatientEditPage from './pages/patients/PatientEditPage';
 import PatientProfilePage from './pages/patients/PatientProfilePage';
 import PatientsPage from './pages/patients/PatientsPage';
 import PharmacyPage from './pages/pharmacy/PharmacyPage';
+import MedicineCreatePage from './pages/pharmacy/MedicineCreatePage';
 import PrescriptionsPage from './pages/prescriptions/PrescriptionsPage';
+import PrescriptionCreatePage from './pages/prescriptions/PrescriptionCreatePage';
 import QueuePage from './pages/queue/QueuePage';
+import QueueCreatePage from './pages/queue/QueueCreatePage';
 import RadiologyPage from './pages/radiology/RadiologyPage';
+import RadiologyRequestCreatePage from './pages/radiology/RadiologyRequestCreatePage';
 import ReportsPage from './pages/reports/ReportsPage';
 import UsersPage from './pages/users/UsersPage';
 
@@ -63,16 +73,26 @@ function App() {
                 <Route path="/patients/:id/edit" element={roleRoute(['admin', 'nurse'], <PatientEditPage />)} />
 
                 <Route path="/appointments" element={roleRoute(['admin', 'doctor', 'nurse'], <AppointmentsPage />)} />
+                <Route path="/appointments/new" element={roleRoute(['admin'], <AppointmentCreatePage />)} />
                 <Route path="/queue" element={roleRoute(['admin', 'doctor', 'nurse'], <QueuePage />)} />
+                <Route path="/queue/new" element={roleRoute(['admin', 'nurse'], <QueueCreatePage />)} />
                 <Route path="/medical-records" element={roleRoute(['admin', 'doctor', 'nurse'], <MedicalRecordsPage />)} />
+                <Route path="/medical-records/new" element={roleRoute(['doctor'], <MedicalRecordCreatePage />)} />
                 <Route path="/prescriptions" element={roleRoute(['admin', 'doctor', 'pharmacist'], <PrescriptionsPage />)} />
+                <Route path="/prescriptions/new" element={roleRoute(['doctor'], <PrescriptionCreatePage />)} />
                 <Route path="/pharmacy" element={roleRoute(['admin', 'doctor', 'pharmacist'], <PharmacyPage />)} />
+                <Route path="/pharmacy/new" element={roleRoute(['admin', 'pharmacist'], <MedicineCreatePage />)} />
                 <Route path="/laboratory" element={roleRoute(['admin', 'doctor', 'nurse', 'lab_technician'], <LaboratoryPage />)} />
+                <Route path="/laboratory/new" element={roleRoute(['doctor'], <LabRequestCreatePage />)} />
                 <Route path="/radiology" element={roleRoute(['admin', 'doctor', 'nurse', 'radiologist'], <RadiologyPage />)} />
+                <Route path="/radiology/new" element={roleRoute(['doctor'], <RadiologyRequestCreatePage />)} />
                 <Route path="/billing" element={roleRoute(['admin'], <BillingPage />)} />
+                <Route path="/billing/new" element={roleRoute(['admin'], <BillCreatePage />)} />
                 <Route path="/inventory" element={roleRoute(['admin'], <InventoryPage />)} />
+                <Route path="/inventory/new" element={roleRoute(['admin'], <InventoryCreatePage />)} />
                 <Route path="/feedback" element={roleRoute(['admin', 'patient'], <FeedbackPage />)} />
                 <Route path="/notifications" element={protectedRoute(<NotificationsPage />)} />
+                <Route path="/notifications/new" element={roleRoute(['admin'], <NotificationCreatePage />)} />
                 <Route path="/reports" element={roleRoute(['admin'], <ReportsPage />)} />
                 <Route path="/users" element={roleRoute(['admin'], <UsersPage />)} />
 

@@ -9,6 +9,7 @@ const BillingPage = () => (
         description="Review patient bills, service totals, payment status, and outstanding balances."
         loadData={getBills}
         itemsKey="bills"
+        createAction={{ to: '/billing/new', label: 'Add Bill', allowedRoles: ['admin'] }}
         emptyMessage="No billing records are currently available."
         columns={[
             { label: 'Bill Number', key: 'billNumber' },

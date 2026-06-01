@@ -52,3 +52,17 @@ export const createUserByAdmin = async (req, res) => {
         return sendError(res, statusCode, error.message);
     }
 };
+
+export const getUsers = async (req, res) => {
+    try {
+        const users = await userService.getUsers(req.query);
+
+        return res.status(200).json({
+            success: true,
+            users,
+        });
+    } catch (error) {
+        const statusCode = error.message.includes('Invalid') ? 400 : 500;
+        return sendError(res, statusCode, error.message);
+    }
+};

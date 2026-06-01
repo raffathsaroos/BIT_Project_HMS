@@ -1,6 +1,8 @@
+import bcrypt from 'bcrypt';
 import userDao from '../dao/userDao.js';
 import { USER_ROLES } from '../models/user.js';
-import { hashPassword, normalizeEmail, sanitizeUser } from './authService.js';
+
+const SALT_ROUNDS = 12;
 
 export const ADMIN_CREATABLE_ROLES = [
     'admin',
@@ -10,6 +12,38 @@ export const ADMIN_CREATABLE_ROLES = [
     'lab_technician',
     'radiologist',
 ];
+
+const LISTABLE_ROLES = [
+    'admin',
+    'doctor',
+    'nurse',
+    'pharmacist',
+    'lab_technician',
+    'radiologist',
+    'patient',
+];
+
+const normalizeEmail = (email) => email.toLowerCase().trim();
+
+const hashPassword = async (password) => bcrypt.hash(password, SALT_ROUNDS);
+
+const sanitizeUser = (user) => ({
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    isActive: user.isActive,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+});
+
+const sanitizeListedUser = (user) => ({
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    isActive: user.isActive,
+});
 
 const createUserWithRole = async ({ name, email, password, role }) => {
     const normalizedEmail = normalizeEmail(email);
@@ -41,6 +75,20 @@ const createUserByAdmin = async ({ name, email, password, role }) => {
     const user = await createUserWithRole({ name, email, password, role });
 
     return sanitizeUser(user);
+};
+
+const getUsers = async (queryParams = {}) => {
+    const query = {};
+
+    if (queryParams.role) {
+        if (!LISTABLE_ROLES.includes(queryParams.role)) {
+            throw new Error('Invalid user role filter');
+        }
+        query.role = queryParams.role;
+    }
+
+    const users = await userDao.getUsers(query);
+    return users.map(sanitizeListedUser);
 };
 
 const ensureDefaultAdmin = async () => {
@@ -75,6 +123,7 @@ const ensureDefaultAdmin = async () => {
 
 const userService = {
     createUserByAdmin,
+    getUsers,
     ensureDefaultAdmin,
 };
 

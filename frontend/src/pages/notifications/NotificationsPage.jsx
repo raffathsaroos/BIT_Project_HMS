@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getNotifications, markNotificationAsRead } from '../../services/notificationService';
 
 const NotificationsPage = () => {
-    const { token } = useAuth();
+    const { token, user } = useAuth();
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -50,7 +50,10 @@ const NotificationsPage = () => {
                     <h1 style={styles.title}>Notification Center</h1>
                     <p style={styles.subtitle}>View appointment, billing, laboratory, radiology, pharmacy, and system notifications.</p>
                 </div>
-                <Link style={styles.secondaryLink} to="/dashboard">Dashboard</Link>
+                <div style={styles.actions}>
+                    <Link style={styles.secondaryLink} to="/dashboard">Dashboard</Link>
+                    {user?.role === 'admin' && <Link style={styles.primaryLink} to="/notifications/new">Create Notification</Link>}
+                </div>
             </section>
 
             {loading && <div style={styles.notice}>Loading notifications.</div>}
@@ -85,7 +88,9 @@ const styles = {
     kicker: { margin: 0, color: '#2563eb', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: '12px' },
     title: { margin: '8px 0', fontSize: '32px', fontWeight: 800 },
     subtitle: { margin: 0, color: '#475569', maxWidth: '680px' },
+    actions: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
     secondaryLink: { textDecoration: 'none', border: '1px solid #cbd5e1', color: '#0f172a', background: '#ffffff', padding: '10px 14px', borderRadius: '10px', fontWeight: 700 },
+    primaryLink: { textDecoration: 'none', border: '1px solid #2563eb', color: '#ffffff', background: '#2563eb', padding: '10px 14px', borderRadius: '10px', fontWeight: 700 },
     notice: { background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '18px', color: '#475569' },
     error: { background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '14px', padding: '18px', color: '#991b1b' },
     list: { display: 'grid', gap: '12px' },

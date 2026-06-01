@@ -9,6 +9,7 @@ const PrescriptionsPage = () => (
         description="Track prescribed medicines, prescribing doctors, patient details, and issuing status."
         loadData={getPrescriptions}
         itemsKey="prescriptions"
+        createAction={{ to: '/prescriptions/new', label: 'Add Prescription', allowedRoles: ['doctor'] }}
         emptyMessage="No prescriptions are currently available."
         columns={[
             { label: 'Patient', render: (item) => getPersonName(item.patient) },
