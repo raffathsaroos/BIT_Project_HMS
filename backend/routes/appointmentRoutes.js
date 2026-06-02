@@ -4,6 +4,7 @@ import {
     deleteAppointment,
     getAppointmentById,
     getAppointments,
+    getMyAppointments,
     updateAppointment,
 } from '../controllers/appointmentController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -17,6 +18,9 @@ router
     .route('/')
     .get(authorizeRoles('admin', 'doctor', 'nurse'), getAppointments)
     .post(authorizeRoles('admin', 'doctor'), createAppointment);
+
+router
+    .get('/my', authorizeRoles('patient'), getMyAppointments);
 
 router
     .route('/:id')

@@ -211,6 +211,17 @@ const getBills = async (queryParams) => {
     return bills.map(sanitizeBill);
 };
 
+const getMyBills = async (userId) => {
+    const patient = await patientDao.getPatientByUserAccount(userId);
+
+    if (!patient) {
+        throw new Error('No patient profile is linked to this account');
+    }
+
+    const bills = await billDao.getBills({ patient: patient._id });
+    return bills.map(sanitizeBill);
+};
+
 const getBillById = async (id) => {
     const bill = await getBillOrThrow(id);
     return sanitizeBill(bill);
@@ -285,6 +296,7 @@ const deleteBill = async (id) => {
 const billService = {
     createBill,
     getBills,
+    getMyBills,
     getBillById,
     updateBill,
     deleteBill,

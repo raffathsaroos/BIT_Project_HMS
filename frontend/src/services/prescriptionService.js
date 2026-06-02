@@ -10,6 +10,10 @@ export const getPrescriptionById = async (id, token) => {
     return apiGet(`${PRESCRIPTIONS_URL}/${id}`, token, {}, 'Unable to load prescription');
 };
 
+export const getMyPrescriptions = async (token) => {
+    return apiGet(`${PRESCRIPTIONS_URL}/my`, token, {}, 'Unable to load your prescriptions');
+};
+
 export const createPrescription = async (prescriptionData, token) => {
     return apiPost(PRESCRIPTIONS_URL, prescriptionData, token, 'Unable to create prescription');
 };

@@ -175,6 +175,17 @@ const getLabRequests = async (queryParams, user) => {
     return labRequests.map(sanitizeLabRequest);
 };
 
+const getMyLabRequests = async (userId) => {
+    const patient = await patientDao.getPatientByUserAccount(userId);
+
+    if (!patient) {
+        throw new Error('No patient profile is linked to this account');
+    }
+
+    const labRequests = await labRequestDao.getLabRequests({ patient: patient._id });
+    return labRequests.map(sanitizeLabRequest);
+};
+
 const getLabRequestById = async (id, user) => {
     requireObjectId(id, 'lab request id');
     const labRequest = await labRequestDao.getLabRequestById(id);
@@ -269,6 +280,7 @@ const deleteLabRequest = async (id) => {
 const labRequestService = {
     createLabRequest,
     getLabRequests,
+    getMyLabRequests,
     getLabRequestById,
     updateLabRequest,
     deleteLabRequest,

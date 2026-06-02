@@ -6,6 +6,7 @@ const sendError = (res, statusCode, message) => res.status(statusCode).json({
 });
 
 const getStatusCode = (error) => {
+    if (error.message === 'No patient profile is linked to this account') return 404;
     if (error.message.includes('not found')) return 404;
     if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('valid date') || error.message.includes('No radiology request')) return 400;
     return 500;
@@ -28,6 +29,19 @@ export const createRadiologyRequest = async (req, res) => {
 export const getRadiologyRequests = async (req, res) => {
     try {
         const radiologyRequests = await radiologyRequestService.getRadiologyRequests(req.query, req.user);
+
+        return res.status(200).json({
+            success: true,
+            radiologyRequests,
+        });
+    } catch (error) {
+        return sendError(res, getStatusCode(error), error.message);
+    }
+};
+
+export const getMyRadiologyRequests = async (req, res) => {
+    try {
+        const radiologyRequests = await radiologyRequestService.getMyRadiologyRequests(req.user.id);
 
         return res.status(200).json({
             success: true,

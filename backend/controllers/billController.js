@@ -6,6 +6,7 @@ const sendError = (res, statusCode, message) => res.status(statusCode).json({
 });
 
 const getStatusCode = (error) => {
+    if (error.message === 'No patient profile is linked to this account') return 404;
     if (error.message.includes('not found')) return 404;
     if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('At least one') || error.message.includes('greater than') || error.message.includes('cannot be greater')) return 400;
     return 500;
@@ -28,6 +29,19 @@ export const createBill = async (req, res) => {
 export const getBills = async (req, res) => {
     try {
         const bills = await billService.getBills(req.query);
+
+        return res.status(200).json({
+            success: true,
+            bills,
+        });
+    } catch (error) {
+        return sendError(res, getStatusCode(error), error.message);
+    }
+};
+
+export const getMyBills = async (req, res) => {
+    try {
+        const bills = await billService.getMyBills(req.user.id);
 
         return res.status(200).json({
             success: true,

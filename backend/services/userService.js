@@ -1,26 +1,17 @@
 import bcrypt from 'bcrypt';
 import userDao from '../dao/userDao.js';
-import { USER_ROLES } from '../models/user.js';
+import { ADMIN_CREATABLE_ROLES, ALL_USER_ROLES, USER_ROLES } from '../types/userRoles.js';
 
 const SALT_ROUNDS = 12;
 
-export const ADMIN_CREATABLE_ROLES = [
-    'admin',
-    'doctor',
-    'nurse',
-    'pharmacist',
-    'lab_technician',
-    'radiologist',
-];
-
 const LISTABLE_ROLES = [
-    'admin',
-    'doctor',
-    'nurse',
-    'pharmacist',
-    'lab_technician',
-    'radiologist',
-    'patient',
+    USER_ROLES.ADMIN,
+    USER_ROLES.DOCTOR,
+    USER_ROLES.NURSE,
+    USER_ROLES.PHARMACIST,
+    USER_ROLES.LAB_TECHNICIAN,
+    USER_ROLES.RADIOLOGIST,
+    USER_ROLES.PATIENT,
 ];
 
 const normalizeEmail = (email) => email.toLowerCase().trim();
@@ -48,8 +39,8 @@ const sanitizeListedUser = (user) => ({
 const createUserWithRole = async ({ name, email, password, role }) => {
     const normalizedEmail = normalizeEmail(email);
 
-    if (!USER_ROLES.includes(role)) {
-        throw new Error(`Invalid role. Allowed roles: ${USER_ROLES.join(', ')}`);
+    if (!ALL_USER_ROLES.includes(role)) {
+        throw new Error(`Invalid role. Allowed roles: ${ALL_USER_ROLES.join(', ')}`);
     }
 
     const existingUser = await userDao.getUserByEmail(normalizedEmail);
@@ -92,7 +83,7 @@ const getUsers = async (queryParams = {}) => {
 };
 
 const ensureDefaultAdmin = async () => {
-    const adminCount = await userDao.countUsersByRole('admin');
+    const adminCount = await userDao.countUsersByRole(USER_ROLES.ADMIN);
     if (adminCount > 0) {
         return null;
     }
@@ -114,7 +105,7 @@ const ensureDefaultAdmin = async () => {
         name,
         email,
         password,
-        role: 'admin',
+        role: USER_ROLES.ADMIN,
     });
 
     console.log(`Default admin created: ${admin.email}`);
@@ -128,3 +119,5 @@ const userService = {
 };
 
 export default userService;
+
+export { ADMIN_CREATABLE_ROLES };

@@ -26,6 +26,10 @@ import MedicalRecordsPage from './pages/medicalRecords/MedicalRecordsPage';
 import MedicalRecordCreatePage from './pages/medicalRecords/MedicalRecordCreatePage';
 import NotificationsPage from './pages/notifications/NotificationsPage';
 import NotificationCreatePage from './pages/notifications/NotificationCreatePage';
+import MyAppointmentsPage from './pages/patientPortal/MyAppointmentsPage';
+import MyBillsPage from './pages/patientPortal/MyBillsPage';
+import MyPrescriptionsPage from './pages/patientPortal/MyPrescriptionsPage';
+import MyReportsPage from './pages/patientPortal/MyReportsPage';
 import PatientCreatePage from './pages/patients/PatientCreatePage';
 import PatientEditPage from './pages/patients/PatientEditPage';
 import PatientProfilePage from './pages/patients/PatientProfilePage';
@@ -74,6 +78,10 @@ function App() {
 
                 <Route path="/appointments" element={roleRoute(['admin', 'doctor', 'nurse'], <AppointmentsPage />)} />
                 <Route path="/appointments/new" element={roleRoute(['admin'], <AppointmentCreatePage />)} />
+                <Route path="/my/appointments" element={roleRoute(['patient'], <MyAppointmentsPage />)} />
+                <Route path="/my/bills" element={roleRoute(['patient'], <MyBillsPage />)} />
+                <Route path="/my/prescriptions" element={roleRoute(['patient'], <MyPrescriptionsPage />)} />
+                <Route path="/my/reports" element={roleRoute(['patient'], <MyReportsPage />)} />
                 <Route path="/queue" element={roleRoute(['admin', 'doctor', 'nurse'], <QueuePage />)} />
                 <Route path="/queue/new" element={roleRoute(['admin', 'nurse'], <QueueCreatePage />)} />
                 <Route path="/medical-records" element={roleRoute(['admin', 'doctor', 'nurse'], <MedicalRecordsPage />)} />

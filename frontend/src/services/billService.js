@@ -10,6 +10,10 @@ export const getBillById = async (id, token) => {
     return apiGet(`${BILLS_URL}/${id}`, token, {}, 'Unable to load bill');
 };
 
+export const getMyBills = async (token) => {
+    return apiGet(`${BILLS_URL}/my`, token, {}, 'Unable to load your bills');
+};
+
 export const createBill = async (billData, token) => {
     return apiPost(BILLS_URL, billData, token, 'Unable to create bill');
 };

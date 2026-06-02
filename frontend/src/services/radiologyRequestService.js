@@ -10,6 +10,10 @@ export const getRadiologyRequestById = async (id, token) => {
     return apiGet(`${RADIOLOGY_REQUESTS_URL}/${id}`, token, {}, 'Unable to load radiology request');
 };
 
+export const getMyRadiologyRequests = async (token) => {
+    return apiGet(`${RADIOLOGY_REQUESTS_URL}/my`, token, {}, 'Unable to load your radiology reports');
+};
+
 export const createRadiologyRequest = async (radiologyRequestData, token) => {
     return apiPost(RADIOLOGY_REQUESTS_URL, radiologyRequestData, token, 'Unable to create radiology request');
 };

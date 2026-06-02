@@ -6,6 +6,7 @@ const sendError = (res, statusCode, message) => res.status(statusCode).json({
 });
 
 const getStatusCode = (error) => {
+    if (error.message === 'No patient profile is linked to this account') return 404;
     if (error.message.includes('not found')) return 404;
     if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('At least one') || error.message.includes('No lab request')) return 400;
     return 500;
@@ -28,6 +29,19 @@ export const createLabRequest = async (req, res) => {
 export const getLabRequests = async (req, res) => {
     try {
         const labRequests = await labRequestService.getLabRequests(req.query, req.user);
+
+        return res.status(200).json({
+            success: true,
+            labRequests,
+        });
+    } catch (error) {
+        return sendError(res, getStatusCode(error), error.message);
+    }
+};
+
+export const getMyLabRequests = async (req, res) => {
+    try {
+        const labRequests = await labRequestService.getMyLabRequests(req.user.id);
 
         return res.status(200).json({
             success: true,

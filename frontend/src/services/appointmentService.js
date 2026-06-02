@@ -10,6 +10,10 @@ export const getAppointmentById = async (id, token) => {
     return apiGet(`${APPOINTMENTS_URL}/${id}`, token, {}, 'Unable to load appointment');
 };
 
+export const getMyAppointments = async (token) => {
+    return apiGet(`${APPOINTMENTS_URL}/my`, token, {}, 'Unable to load your appointments');
+};
+
 export const createAppointment = async (appointmentData, token) => {
     return apiPost(APPOINTMENTS_URL, appointmentData, token, 'Unable to create appointment');
 };

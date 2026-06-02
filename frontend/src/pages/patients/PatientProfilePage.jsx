@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { useAuth } from '../../context/AuthContext';
 
-import { deletePatient, getPatientById } from '../../services/patientService';
+import { deletePatient, getPatientById, linkPatientUser } from '../../services/patientService';
+
+import { getUsers } from '../../services/userService';
 
 
 
@@ -26,17 +28,39 @@ const PatientProfilePage = () => {
 
     const [error, setError] = useState('');
 
+    const [patientUsers, setPatientUsers] = useState([]);
+
+    const [selectedUserId, setSelectedUserId] = useState('');
+
+    const [loadingUsers, setLoadingUsers] = useState(false);
+
+    const [linking, setLinking] = useState(false);
+
+    const [linkError, setLinkError] = useState('');
+
+    const [linkSuccess, setLinkSuccess] = useState('');
+
+
+
+    const loadPatientProfile = useCallback(async () => {
+
+        const response = await getPatientById(id, token);
+
+        setPatient(response.patient);
+
+        setSelectedUserId(response.patient?.userAccount?.id || '');
+
+    }, [id, token]);
+
 
 
     useEffect(() => {
 
-        const loadPatient = async () => {
+        const loadCurrentPatient = async () => {
 
             try {
 
-                const response = await getPatientById(id, token);
-
-                setPatient(response.patient);
+                await loadPatientProfile();
 
             } catch (err) {
 
@@ -52,9 +76,45 @@ const PatientProfilePage = () => {
 
 
 
-        loadPatient();
+        loadCurrentPatient();
 
-    }, [id, token]);
+    }, [loadPatientProfile]);
+
+
+
+    useEffect(() => {
+
+        if (user?.role !== 'admin') return;
+
+        const loadPatientUsers = async () => {
+
+            setLoadingUsers(true);
+
+            setLinkError('');
+
+            try {
+
+                const response = await getUsers({ token, filters: { role: 'patient' } });
+
+                setPatientUsers(response.users || []);
+
+            } catch (err) {
+
+                setLinkError(err.message || 'Unable to load patient user accounts');
+
+            } finally {
+
+                setLoadingUsers(false);
+
+            }
+
+        };
+
+
+
+        loadPatientUsers();
+
+    }, [token, user?.role]);
 
 
 
@@ -75,6 +135,50 @@ const PatientProfilePage = () => {
         } catch (err) {
 
             setError(err.message || 'Unable to delete patient');
+
+        }
+
+    };
+
+
+
+    const handleLinkAccount = async () => {
+
+        if (!selectedUserId) {
+
+            setLinkError('Select a patient user account');
+
+            setLinkSuccess('');
+
+            return;
+
+        }
+
+
+
+        setLinking(true);
+
+        setLinkError('');
+
+        setLinkSuccess('');
+
+
+
+        try {
+
+            await linkPatientUser(id, selectedUserId, token);
+
+            await loadPatientProfile();
+
+            setLinkSuccess('Patient login account linked successfully.');
+
+        } catch (err) {
+
+            setLinkError(err.message || 'Unable to link patient user account');
+
+        } finally {
+
+            setLinking(false);
 
         }
 
@@ -144,6 +248,64 @@ const PatientProfilePage = () => {
 
             <section style={styles.card}><h2>Address</h2><p>{patient.address}</p></section>
 
+            {user?.role === 'admin' && (
+
+                <section style={styles.card}>
+
+                    <h2>Link Patient Login Account</h2>
+
+                    {patient.userAccount && (
+
+                        <p style={styles.linkedAccount}>
+
+                            Linked to {patient.userAccount.name} ({patient.userAccount.email})
+
+                        </p>
+
+                    )}
+
+                    {linkSuccess && <div style={styles.success}>{linkSuccess}</div>}
+
+                    {linkError && <div style={styles.error}>{linkError}</div>}
+
+                    {loadingUsers ? (
+
+                        <p>Loading patient user accounts...</p>
+
+                    ) : (
+
+                        <div style={styles.linkForm}>
+
+                            <select value={selectedUserId} onChange={(event) => setSelectedUserId(event.target.value)} style={styles.input}>
+
+                                <option value="">Select patient user account</option>
+
+                                {patientUsers.map((patientUser) => (
+
+                                    <option key={patientUser.id} value={patientUser.id}>
+
+                                        {patientUser.name} ({patientUser.email})
+
+                                    </option>
+
+                                ))}
+
+                            </select>
+
+                            <button type="button" onClick={handleLinkAccount} disabled={linking} style={styles.primaryButton}>
+
+                                {linking ? 'Linking Account' : 'Link Account'}
+
+                            </button>
+
+                        </div>
+
+                    )}
+
+                </section>
+
+            )}
+
             <section style={styles.card}><h2>Allergies</h2><p>{patient.allergies || 'None recorded'}</p></section>
 
             <section style={styles.card}><h2>Medical Notes</h2><p>{patient.medicalNotes || 'No notes recorded'}</p></section>
@@ -190,6 +352,8 @@ const styles = {
 
     deleteButton: { border: 'none', background: '#ef4444', color: '#fff', padding: '12px 16px', borderRadius: '12px', fontWeight: 800, cursor: 'pointer' },
 
+    primaryButton: { border: 'none', background: '#2563eb', color: '#fff', padding: '12px 16px', borderRadius: '12px', fontWeight: 800, cursor: 'pointer' },
+
     grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px', marginBottom: '18px' },
 
     infoCard: { background: '#fff', borderRadius: '16px', padding: '18px', boxShadow: '0 12px 30px rgba(15,23,42,0.08)', display: 'flex', flexDirection: 'column', gap: '8px' },
@@ -201,6 +365,14 @@ const styles = {
     card: { background: '#fff', borderRadius: '18px', padding: '22px', boxShadow: '0 12px 30px rgba(15,23,42,0.08)', marginBottom: '18px', color: '#334155' },
 
     error: { background: '#fee2e2', color: '#991b1b', borderRadius: '12px', padding: '12px', marginBottom: '16px', fontWeight: 700 },
+
+    success: { background: '#dcfce7', color: '#166534', borderRadius: '12px', padding: '12px', marginBottom: '16px', fontWeight: 700 },
+
+    linkedAccount: { background: '#eff6ff', color: '#1e40af', borderRadius: '12px', padding: '12px', fontWeight: 700 },
+
+    linkForm: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' },
+
+    input: { minWidth: '280px', flex: '1 1 280px', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '12px' },
 
 };
 

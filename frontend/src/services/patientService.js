@@ -70,6 +70,24 @@ export const getPatientById = async (id, token) => {
 
 
 
+export const getMyPatientProfile = async (token) => {
+
+    try {
+
+        const response = await axios.get(`${PATIENTS_URL}/me`, authHeaders(token));
+
+        return response.data;
+
+    } catch (error) {
+
+        throw new Error(getErrorMessage(error, 'Unable to load your patient profile'), { cause: error });
+
+    }
+
+};
+
+
+
 export const createPatient = async (patientData, token) => {
 
     try {
@@ -99,6 +117,24 @@ export const updatePatient = async (id, patientData, token) => {
     } catch (error) {
 
         throw new Error(getErrorMessage(error, 'Unable to update patient'), { cause: error });
+
+    }
+
+};
+
+
+
+export const linkPatientUser = async (id, userId, token) => {
+
+    try {
+
+        const response = await axios.patch(`${PATIENTS_URL}/${id}/link-user`, { userId }, authHeaders(token));
+
+        return response.data;
+
+    } catch (error) {
+
+        throw new Error(getErrorMessage(error, 'Unable to link patient user account'), { cause: error });
 
     }
 

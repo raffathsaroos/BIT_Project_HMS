@@ -2,6 +2,7 @@ import express from 'express';
 import {
     createPrescription,
     deletePrescription,
+    getMyPrescriptions,
     getPrescriptionById,
     getPrescriptions,
     updatePrescription,
@@ -17,6 +18,9 @@ router
     .route('/')
     .get(authorizeRoles('admin', 'doctor', 'pharmacist'), getPrescriptions)
     .post(authorizeRoles('admin', 'doctor'), createPrescription);
+
+router
+    .get('/my', authorizeRoles('patient'), getMyPrescriptions);
 
 router
     .route('/:id')

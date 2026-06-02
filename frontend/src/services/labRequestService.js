@@ -10,6 +10,10 @@ export const getLabRequestById = async (id, token) => {
     return apiGet(`${LAB_REQUESTS_URL}/${id}`, token, {}, 'Unable to load lab request');
 };
 
+export const getMyLabRequests = async (token) => {
+    return apiGet(`${LAB_REQUESTS_URL}/my`, token, {}, 'Unable to load your lab reports');
+};
+
 export const createLabRequest = async (labRequestData, token) => {
     return apiPost(LAB_REQUESTS_URL, labRequestData, token, 'Unable to create lab request');
 };

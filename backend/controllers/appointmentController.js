@@ -6,6 +6,7 @@ const sendError = (res, statusCode, message) => res.status(statusCode).json({
 });
 
 const getStatusCode = (error) => {
+    if (error.message === 'No patient profile is linked to this account') return 404;
     if (error.message.includes('not found')) return 404;
     if (error.message.includes('Invalid') || error.message.includes('required') || error.message.includes('No appointment')) return 400;
     return 500;
@@ -23,6 +24,15 @@ export const createAppointment = async (req, res) => {
 export const getAppointments = async (req, res) => {
     try {
         const appointments = await appointmentService.getAppointments(req.query, req.user);
+        return res.status(200).json({ success: true, appointments });
+    } catch (error) {
+        return sendError(res, getStatusCode(error), error.message);
+    }
+};
+
+export const getMyAppointments = async (req, res) => {
+    try {
+        const appointments = await appointmentService.getMyAppointments(req.user.id);
         return res.status(200).json({ success: true, appointments });
     } catch (error) {
         return sendError(res, getStatusCode(error), error.message);

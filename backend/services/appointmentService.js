@@ -126,6 +126,17 @@ const getAppointments = async (queryParams, user) => {
     return appointments.map(sanitizeAppointment);
 };
 
+const getMyAppointments = async (userId) => {
+    const patient = await patientDao.getPatientByUserAccount(userId);
+
+    if (!patient) {
+        throw new Error('No patient profile is linked to this account');
+    }
+
+    const appointments = await appointmentDao.getAppointments({ patient: patient._id });
+    return appointments.map(sanitizeAppointment);
+};
+
 const getAppointmentById = async (id, user) => {
     requireObjectId(id, 'appointment id');
     const appointment = await appointmentDao.getAppointmentById(id);
@@ -194,6 +205,7 @@ const deleteAppointment = async (id) => {
 const appointmentService = {
     createAppointment,
     getAppointments,
+    getMyAppointments,
     getAppointmentById,
     updateAppointment,
     deleteAppointment,

@@ -165,6 +165,17 @@ const getPrescriptions = async (queryParams, user) => {
     return prescriptions.map(sanitizePrescription);
 };
 
+const getMyPrescriptions = async (userId) => {
+    const patient = await patientDao.getPatientByUserAccount(userId);
+
+    if (!patient) {
+        throw new Error('No patient profile is linked to this account');
+    }
+
+    const prescriptions = await prescriptionDao.getPrescriptions({ patient: patient._id });
+    return prescriptions.map(sanitizePrescription);
+};
+
 const getPrescriptionById = async (id, user) => {
     requireObjectId(id, 'prescription id');
     const prescription = await prescriptionDao.getPrescriptionById(id);
@@ -239,6 +250,7 @@ const deletePrescription = async (id) => {
 const prescriptionService = {
     createPrescription,
     getPrescriptions,
+    getMyPrescriptions,
     getPrescriptionById,
     updatePrescription,
     deletePrescription,

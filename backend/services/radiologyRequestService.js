@@ -167,6 +167,17 @@ const getRadiologyRequests = async (queryParams, user) => {
     return requests.map(sanitizeRadiologyRequest);
 };
 
+const getMyRadiologyRequests = async (userId) => {
+    const patient = await patientDao.getPatientByUserAccount(userId);
+
+    if (!patient) {
+        throw new Error('No patient profile is linked to this account');
+    }
+
+    const requests = await radiologyRequestDao.getRadiologyRequests({ patient: patient._id });
+    return requests.map(sanitizeRadiologyRequest);
+};
+
 const getRadiologyRequestById = async (id, user) => {
     requireObjectId(id, 'radiology request id');
     const request = await radiologyRequestDao.getRadiologyRequestById(id);
@@ -259,6 +270,7 @@ const deleteRadiologyRequest = async (id) => {
 const radiologyRequestService = {
     createRadiologyRequest,
     getRadiologyRequests,
+    getMyRadiologyRequests,
     getRadiologyRequestById,
     updateRadiologyRequest,
     deleteRadiologyRequest,

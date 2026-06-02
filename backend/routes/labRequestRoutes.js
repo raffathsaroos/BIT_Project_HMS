@@ -4,6 +4,7 @@ import {
     deleteLabRequest,
     getLabRequestById,
     getLabRequests,
+    getMyLabRequests,
     updateLabRequest,
 } from '../controllers/labRequestController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -17,6 +18,9 @@ router
     .route('/')
     .get(authorizeRoles('admin', 'doctor', 'nurse', 'lab_technician'), getLabRequests)
     .post(authorizeRoles('admin', 'doctor'), createLabRequest);
+
+router
+    .get('/my', authorizeRoles('patient'), getMyLabRequests);
 
 router
     .route('/:id')

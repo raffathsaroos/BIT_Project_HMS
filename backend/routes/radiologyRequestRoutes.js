@@ -2,6 +2,7 @@ import express from 'express';
 import {
     createRadiologyRequest,
     deleteRadiologyRequest,
+    getMyRadiologyRequests,
     getRadiologyRequestById,
     getRadiologyRequests,
     updateRadiologyRequest,
@@ -17,6 +18,9 @@ router
     .route('/')
     .get(authorizeRoles('admin', 'doctor', 'nurse', 'radiologist'), getRadiologyRequests)
     .post(authorizeRoles('admin', 'doctor'), createRadiologyRequest);
+
+router
+    .get('/my', authorizeRoles('patient'), getMyRadiologyRequests);
 
 router
     .route('/:id')
